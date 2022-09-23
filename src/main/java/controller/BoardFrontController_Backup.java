@@ -9,16 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import action.Action;
-import action.BoardListAction;
 import action.BoardListAction_Backup;
-import action.BoardWriteProAction;
 import action.BoardWriteProAction_Backup;
 import vo.ActionForward;
 
 // 요청 및 응답에 대한 흐름을 제어하는 FrontController 클래스 정의
-@WebServlet("*.bo")
-public class BoardFrontController extends HttpServlet {
+//@WebServlet("*.bo")
+public class BoardFrontController_Backup extends HttpServlet {
 	
 	// GET 방식 & POST 방식 요청에 대한 공통 작업을 수행하는 doProcess() 메서드 정의
 	protected void doProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,48 +29,44 @@ public class BoardFrontController extends HttpServlet {
 		System.out.println("command : " + command);
 		
 		// 공통으로 사용할 변수 선언
-		Action action = null; // XXXAction 클래스를 공통으로 관리할 Action 인터페이스 타입
 		ActionForward forward = null; // 포워딩 정보를 저장할 ActionForward 타입
 		
 		// 요청받은 서블릿 주소 판별을 통해 각각 다른 작업 수행
+		// BoardWriteForm.bo => qna_board_write.jsp
+		// BoardWritePro.bo
+		// BoardList.bo => qna_board_list.jsp
 		if(command.equals("/BoardWriteForm.bo")) {
 			// 글쓰기 폼 페이지 요청
 			// 포워딩 대상이 뷰페이지(*.jsp)인 경우 Dispatcher 방식으로 포워딩
 			// (별다른 비즈니스 로직이 필요하지 않을 경우)
 			// 현재 서블릿 주소(= 요청 주소)가 루트(http://localhost:8080/MVC_Board/BoardWriteForm.bo) 이다.
 			// => 주의! webapp 폴더(루트) 내의 board 폴더에 있는 qna_board_write.jsp 페이지
-//			// => 공통으로 포워딩 정보를 관리하는 ActionForward 객체를 직접 생성하여
-			//    Dispatcher 방식으로 포워딩 정보를 설정
+//			RequestDispatcher dispatcher = request.getRequestDispatcher("board/qna_board_write.jsp");
+//			dispatcher.forward(request, response);
+			
+			// 공통으로 포워딩 작업을 처리하기 위해 ActionForward 객체 생성
 			forward = new ActionForward();
 			forward.setPath("board/qna_board_write.jsp");
-			forward.setRedirect(false); // boolean 타입 기본값이 false 이므로 생략도 가능
+			forward.setRedirect(false);
 		} else if(command.equals("/BoardWritePro.bo")) {
 			// 글쓰기 비즈니스 작업 요청
 			// 비즈니스 작업을 처리할 Action 클래스의 인스턴스 생성 후 execute() 메서드를 호출
 			// => 파라미터 : HttpServletRequest 객체, HttpServletResponse 객체
-			// => 리턴타입 : ActionForward(forward)
-			// => throws 에 의한 예외 위임으로 예외 처리 필요
-//			BoardWriteProAction action = new BoardWriteProAction();
-			// XXXAction 클래스들은 Action 인터페이스의 서브클래스이므로
-			// 별도의 변수를 각각 선언하기 보다 부모 인터페이스 타입인 Action 타입 변수로
-			// 업캐스팅하여 공통으로 관리가 가능하다! (호출할 메서드도 상속받은 메서드이기 때문)
-			action = new BoardWriteProAction(); // XXXAction -> Action 업캐스팅
+			BoardWriteProAction_Backup action = new BoardWriteProAction_Backup();
+			forward = action.execute(request, response);
 			
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// 포워딩 방식 판별
+//			if(forward.isRedirect()) { // Redirect 방식
+//				response.sendRedirect(forward.getPath());
+//			} else { // Dispatcher 방식
+//				RequestDispatcher dispatcher = request.getRequestDispatcher(forward.getPath());
+//				dispatcher.forward(request, response);
+//			}
 		} else if(command.equals("/BoardList.bo")) {
 			// 글목록 비즈니스 작업 요청 
 			// 비즈니스 작업을 처리할 Action 클래스의 인스턴스 생성 후 execute() 메서드를 호출
-			action = new BoardListAction();
-			
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			BoardListAction_Backup action = new BoardListAction_Backup();
+			forward = action.execute(request, response);
 		}
 		
 		// --------------------------------------------------------------------------------
