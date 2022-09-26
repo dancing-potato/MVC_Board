@@ -82,19 +82,3 @@ public class MemberBean {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

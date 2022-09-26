@@ -126,20 +126,3 @@ public class BoardBean {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
