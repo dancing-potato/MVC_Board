@@ -8,14 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import svc.BoardWriteProService;
 import vo.ActionForward;
 import vo.BoardBean;
 
+// FrontController 클래스로부터 지시를 받아 비즈니스 로직 준비 작업을 수행하고
+// 실제 비즈니스 로직을 서비스 클래스로 요청한 후 요청 처리 결과를 리턴받아
+// 포워딩 준비 작업을 수행하는 클래스
 public class BoardWriteProAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("BoardWriteProAction");
+//		System.out.println("BoardWriteProAction");
 		
 		ActionForward forward = null;
 		
@@ -62,8 +66,8 @@ public class BoardWriteProAction implements Action {
 		
 		// BoardWriteProService 인스턴스 생성 후 registBoard() 메서드를 호출하여 글쓰기 작업 요청
 		// => 파라미터 : BoardBean 객체    리턴타입 : boolean(isWriteSuccess)
-		// 글쓰기 비즈니스 로직 요청에 대한 처리가 완료됐다고 가정
-		boolean isWriteSuccess = false;
+		BoardWriteProService service = new BoardWriteProService();
+		boolean isWriteSuccess = service.registBoard(board);
 		
 		// 글쓰기 요청 결과에 대한 판별 작업 수행
 		if(!isWriteSuccess) { // 글쓰기 작업 실패 시(= isWriteSucces 가 false 일 경우)
@@ -96,7 +100,21 @@ public class BoardWriteProAction implements Action {
 			forward.setRedirect(true);
 		}
 		
-		return forward;
+		return forward; // BoardFrontController 로 리턴
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

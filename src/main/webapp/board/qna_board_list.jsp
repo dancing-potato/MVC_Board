@@ -43,8 +43,6 @@
 		width: 1024px;
 		text-align: right;
 	}
-	
-	
 </style>
 </head>
 <body>
