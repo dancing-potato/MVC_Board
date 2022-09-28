@@ -160,21 +160,22 @@ public class BoardDAO {
 			
 			while(rs.next()) {
 				// BoardBean 객체에 읽어온 게시물 1개씩 저장
-				BoardBean boardBean = new BoardBean();
-				boardBean.setBoard_num(rs.getInt("board_num"));
-				boardBean.setBoard_name(rs.getString("board_name"));
-				boardBean.setBoard_subject(rs.getString("board_subject"));
-				boardBean.setBoard_content(rs.getString("board_content"));
-				boardBean.setBoard_file(rs.getString("board_file"));
-				boardBean.setBoard_real_file(rs.getString("board_real_file"));
-				boardBean.setBoard_re_ref(rs.getInt("board_re_ref"));
-				boardBean.setBoard_re_lev(rs.getInt("board_re_lev"));
-				boardBean.setBoard_re_seq(rs.getInt("board_re_seq"));
-				boardBean.setBoard_readcount(rs.getInt("board_readcount"));
-				boardBean.setBoard_date(rs.getDate("board_date"));
+				BoardBean board = new BoardBean();
+				board.setBoard_num(rs.getInt("board_num"));
+				board.setBoard_name(rs.getString("board_name"));
+//				board.setBoard_pass(rs.getString("board_pass")); // 패스워드 제외(보안)
+				board.setBoard_subject(rs.getString("board_subject"));
+				board.setBoard_content(rs.getString("board_content"));
+				board.setBoard_file(rs.getString("board_file"));
+				board.setBoard_real_file(rs.getString("board_real_file"));
+				board.setBoard_re_ref(rs.getInt("board_re_ref"));
+				board.setBoard_re_lev(rs.getInt("board_re_lev"));
+				board.setBoard_re_seq(rs.getInt("board_re_seq"));
+				board.setBoard_readcount(rs.getInt("board_readcount"));
+				board.setBoard_date(rs.getDate("board_date"));
 				
 				// 1개 게시물 정보가 저장된 BoardBean 객체를 ArrayList 객체에 추가
-				boardList.add(boardBean);
+				boardList.add(board);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -185,6 +186,68 @@ public class BoardDAO {
 		}
 		
 		return boardList;
+	}
+	
+	// 게시물 조회수 증가
+	// => 파라미터 : 글번호    리턴타입 : void
+	public void updateReadcount(int board_num) {
+		PreparedStatement pstmt = null;
+		
+		try {
+			// 글번호에 해당하는 레코드의 조회수(board_readcount) 값 1 증가하는 UPDATE 구문 작성
+			String sql = "UPDATE board SET board_readcount=board_readcount+1 WHERE board_num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, board_num);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - updateReadcount()");
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		
+	}
+	
+	// 게시물 상세 정보 조회
+	// => 파라미터 : 글번호    리턴타입 : BoardBean(board)
+	public BoardBean selectBoard(int board_num) {
+		BoardBean board = null;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			// 글번호에 해당하는 레코드 조회
+			String sql = "SELECT * FROM board WHERE board_num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, board_num);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				// BoardBean 객체 생성 및 데이터 저장
+				board = new BoardBean();
+				board.setBoard_num(rs.getInt("board_num"));
+				board.setBoard_name(rs.getString("board_name"));
+//				board.setBoard_pass(rs.getString("board_pass")); // 패스워드 제외(보안)
+				board.setBoard_subject(rs.getString("board_subject"));
+				board.setBoard_content(rs.getString("board_content"));
+				board.setBoard_file(rs.getString("board_file"));
+				board.setBoard_real_file(rs.getString("board_real_file"));
+				board.setBoard_re_ref(rs.getInt("board_re_ref"));
+				board.setBoard_re_lev(rs.getInt("board_re_lev"));
+				board.setBoard_re_seq(rs.getInt("board_re_seq"));
+				board.setBoard_readcount(rs.getInt("board_readcount"));
+				board.setBoard_date(rs.getDate("board_date"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - selectBoard()");
+		} finally {
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(rs);
+		}
+		
+		return board;
 	}
 	
 	

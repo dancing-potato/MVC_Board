@@ -49,9 +49,9 @@ public class BoardListAction implements Action {
 		int pageListLimit = 10; // 한 페이지에서 표시할 페이지 목록을 10개로 제한
 		
 		// 전체 페이지 수 계산
-		int maxPage = listCount / pageListLimit;
+		int maxPage = listCount / listLimit;
 		
-		if(listCount / pageListLimit > 0) {
+		if(listCount % listLimit > 0) {
 			maxPage++;
 		}
 		
@@ -74,7 +74,7 @@ public class BoardListAction implements Action {
 		// request 객체에 뷰페이지로 전달할 데이터(객체) 저장 = request.setAttribute()
 		request.setAttribute("boardList", boardList);
 		request.setAttribute("pageInfo", pageInfo);
-		System.out.println(boardList);
+//		System.out.println(boardList);
 		
 		// ActionForward 객체 생성 후 board 폴더의 qna_board_list.jsp 페이지 포워딩 설정
 		// => URL 및 request 객체가 유지되어야 하므로 Dispatcher 방식 포워딩 

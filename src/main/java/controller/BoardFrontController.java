@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
+import action.BoardDeleteProAction;
+import action.BoardDetailAction;
 import action.BoardListAction;
 import action.BoardListAction_Backup;
 import action.BoardWriteProAction;
@@ -68,6 +70,29 @@ public class BoardFrontController extends HttpServlet {
 			// 글목록 비즈니스 작업 요청 
 			// 비즈니스 작업을 처리할 Action 클래스의 인스턴스 생성 후 execute() 메서드를 호출
 			action = new BoardListAction();
+			
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/BoardDetail.bo")) {
+			// 글 상세정보 조회 비즈니스 작업 요청 => BoardDetailAction 클래스
+			action = new BoardDetailAction();
+			
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/BoardDeleteForm.bo")) {
+			// 글 삭제 폼 페이지 요청(qna_board_delete.jsp)
+			forward = new ActionForward();
+			forward.setPath("board/qna_board_delete.jsp");
+			forward.setRedirect(false);
+		} else if(command.equals("/BoardDeletePro.bo")) {
+			// 글 삭제 비즈니스 작업 요청 => BoardDeleteProAction 클래스
+			action = new BoardDeleteProAction();
 			
 			try {
 				forward = action.execute(request, response);
