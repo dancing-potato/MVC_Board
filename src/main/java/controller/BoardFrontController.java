@@ -14,6 +14,8 @@ import action.BoardDeleteProAction;
 import action.BoardDetailAction;
 import action.BoardListAction;
 import action.BoardListAction_Backup;
+import action.BoardModifyFormAction;
+import action.BoardModifyProAction;
 import action.BoardWriteProAction;
 import action.BoardWriteProAction_Backup;
 import vo.ActionForward;
@@ -93,6 +95,24 @@ public class BoardFrontController extends HttpServlet {
 		} else if(command.equals("/BoardDeletePro.bo")) {
 			// 글 삭제 비즈니스 작업 요청 => BoardDeleteProAction 클래스
 			action = new BoardDeleteProAction();
+			
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/BoardModifyForm.bo")) {
+			// 글 수정 폼 작업 요청 => BoardModifyFormAction 클래스
+			action = new BoardModifyFormAction();
+			
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/BoardModifyPro.bo")) {
+			// 글 수정 비즈니스 작업 요청 => BoardModifyProAction 클래스
+			action = new BoardModifyProAction();
 			
 			try {
 				forward = action.execute(request, response);

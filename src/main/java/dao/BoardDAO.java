@@ -250,6 +250,105 @@ public class BoardDAO {
 		return board;
 	}
 	
+	// 글번호에 해당하는 레코드의 패스워드 일치 여부 확인
+	public boolean isBoardWriter(int board_num, String board_pass) {
+		boolean isBoardWriter = false;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			// 글번호와 패스워드가 일치하는 레코드 검색
+			String sql = "SELECT * FROM board WHERE board_num=? AND board_pass=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, board_num);
+			pstmt.setString(2, board_pass);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) { // 조회 결과가 있을 경우(= 번호와 패스워드 모두 일치할 경우)
+				// isBoardWriter 를 true 로 변경
+				isBoardWriter = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - isBoardWriter()");
+		} finally {
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(rs);
+		}
+		
+		return isBoardWriter;
+	}
+	
+	// 게시물 삭제
+	// => 파라미터 : 글번호    리턴타입 : int(deleteCount)
+	public int deleteBoard(int board_num) {
+		int deleteCount = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		try {
+			// 글번호에 해당하는 레코드 삭제(패스워드는 이미 판별 완료되었으므로 제외)
+			String sql = "DELETE FROM board WHERE board_num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, board_num);
+			deleteCount = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - deleteBoard()");
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		
+		return deleteCount;
+	}
+	
+	// 글 수정
+	public int updateBoard(BoardBean board) {
+		int updateCount = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		try {
+			// 글번호가 일치하는 레코드의 작성자, 제목, 내용, 원본파일, 실제파일명 변경
+			// => 단, 수정할 파일이 null 일 경우 파일 관련 컬럼은 수정 대상에서 제외
+			if(board.getBoard_file() == null) { // 수정할 파일이 없을 경우
+				System.out.println("수정 파일 없음");
+				String sql = "UPDATE board "
+						+ "SET board_name=?, board_subject=?, board_content=? "
+						+ "WHERE board_num=?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, board.getBoard_name());
+				pstmt.setString(2, board.getBoard_subject());
+				pstmt.setString(3, board.getBoard_content());
+				pstmt.setInt(4, board.getBoard_num());
+			} else { // 수정할 파일이 있을 경우
+				System.out.println("수정 파일 있음");
+				String sql = "UPDATE board "
+						+ "SET board_name=?, board_subject=?, board_content=?, board_file=?, board_real_file=? "
+						+ "WHERE board_num=?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, board.getBoard_name());
+				pstmt.setString(2, board.getBoard_subject());
+				pstmt.setString(3, board.getBoard_content());
+				pstmt.setString(4, board.getBoard_file());
+				pstmt.setString(5, board.getBoard_real_file());
+				pstmt.setInt(6, board.getBoard_num());
+			}
+			
+			// 수정할 파일 존재 여부와 상관없이 UPDATE 구문은 공통으로 실행
+			updateCount = pstmt.executeUpdate();
+			System.out.println("updateCount = " + updateCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - updateBoard()");
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		
+		return updateCount;
+	}
+	
 	
 }
 

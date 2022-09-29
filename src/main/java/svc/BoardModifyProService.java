@@ -4,9 +4,11 @@ import java.sql.Connection;
 
 import dao.BoardDAO;
 import db.JdbcUtil;
+import vo.BoardBean;
 
-public class BoardDeleteProService {
-
+public class BoardModifyProService {
+	
+	// BoardDeleteProService 클래스의 메서드와 완전히 동일함
 	public boolean isBoardWriter(int board_num, String board_pass) {
 		boolean isBoardWriter = false;
 		
@@ -30,10 +32,9 @@ public class BoardDeleteProService {
 		return isBoardWriter;
 	}
 
-	// 게시물 삭제 작업 요청하는 removeBoard()
-	// => 파라미터 : 글번호    리턴타입 : boolean(isDeleteSuccess)
-	public boolean removeBoard(int board_num) {
-		boolean isDeleteSuccess = false;
+	// 글 수정 작업 요청을 수행하는 modifyBoard() 메서드
+	public boolean modifyBoard(BoardBean board) {
+		boolean isModifySuccess = false;
 		
 		// 공통작업-1. Connection 객체 가져오기
 		Connection con = JdbcUtil.getConnection();
@@ -44,16 +45,15 @@ public class BoardDeleteProService {
 		// 공통작업-3. BoardDAO 객체에 Connection 객체 전달하기
 		dao.setConnection(con);
 		
-		// BoardDAO 클래스의 deleteBoard() 메서드 호출하여 게시물 삭제 작업 수행 후
-        // 리턴되는 int 타입 결과 저장 후 판별
-		// => 파라미터 : 글번호    리턴타입 : int(deleteCount)
-		int deleteCount = dao.deleteBoard(board_num);
+		// BoardDAO 클래스의 updateBoard() 메서드 호출하여 게시물 수정 작업 수행
+		// => 파라미터 : BoardBean 객체    리턴타입 : int(updateCount)
+		int updateCount = dao.updateBoard(board);
 		
 		// 트랜잭션 처리
-		if(deleteCount > 0) {
+		if(updateCount > 0) {
 			JdbcUtil.commit(con);
-			// isDeleteSuccess 를 true 로 변경
-			isDeleteSuccess = true;
+			// isModifySuccess 를 true 로 변경
+			isModifySuccess = true;
 		} else {
 			JdbcUtil.rollback(con);
 		}
@@ -61,10 +61,12 @@ public class BoardDeleteProService {
 		// 공통작업-4. Connection 객체 반환
 		JdbcUtil.close(con);
 		
-		return isDeleteSuccess;
+		return isModifySuccess;
 	}
-
 }
+
+
+
 
 
 
