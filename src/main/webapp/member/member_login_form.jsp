@@ -1,12 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>     
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link href="<%=request.getContextPath() %>/css/top.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<!-- 세션 아이디가 null 이 아닐 경우 메인페이지로 돌려보내기 -->
+	<c:if test="${sessionScope.sId ne null }">
+		<script>
+			alert("잘못된 접근입니다!");
+			location.href = "./";
+		</script>
+	</c:if>
+	<header>
+		<!-- Login, Join 링크 표시 영역(inc/top.jsp 페이지 삽입) -->
+		<jsp:include page="/inc/top.jsp"></jsp:include>
+	</header>
 	<h1>로그인</h1>
 	<form action="MemberLoginPro.me" method="post">
 		<table>

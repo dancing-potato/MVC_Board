@@ -349,6 +349,76 @@ public class BoardDAO {
 		return updateCount;
 	}
 	
+	// 답글 등록
+	public int insertReplyBoard(BoardBean board) {
+		int insertCount = 0;
+		
+		// 데이터베이스 작업에 필요한 변수 선언
+		PreparedStatement pstmt = null, pstmt2 = null;
+		ResultSet rs = null;
+		
+		try {
+			// board 테이블의 게시물 최대 번호를 조회하여 새 글번호 결정(+1)
+			int num = 1; // 새 글 번호를 저장할 변수 선언(기본값으로 1 설정)
+			String sql = "SELECT MAX(board_num) FROM board";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			// 기존 게시물이 존재하여 최대 번호가 조회되었을 경우
+			if(rs.next()) {
+				// 새 글 번호 = 현재 최대 글 번호 + 1
+				num = rs.getInt(1) + 1;
+//					System.out.println("새 글 번호 : " + num);
+			}
+			// --------------------------------------------------------
+			int re_ref = board.getBoard_re_ref(); // 원본글의 참조글 번호
+			int re_lev = board.getBoard_re_lev(); // 원본글의 들여쓰기 레벨
+			int re_seq = board.getBoard_re_seq(); // 원본글의 순서 번호
+			
+			// 기존 답글들에 대한 순서번호 증가(UPDATE 구문 사용)
+			// => 원본글의 참조글번호(board_re_ref)와 같은 레코드들 중에서
+			//    원본글의 순서번호 보다 큰 게시물들의 순서번호를 + 1 씩 처리
+			sql = "UPDATE board SET board_re_seq=board_re_seq+1 "
+					+ "WHERE board_re_ref=? AND board_re_seq>?";
+			pstmt2 = con.prepareStatement(sql);
+			pstmt2.setInt(1, re_ref);
+			pstmt2.setInt(2, re_seq);
+			pstmt2.executeUpdate();
+			JdbcUtil.close(pstmt2);
+			
+			// 새 답글의 들여쓰기레벨과 순서번호를 원본글의 번호 + 1 처리
+			re_lev++;
+			re_seq++;
+			
+			// 답글 INSERT 작업 수행
+			sql = "INSERT INTO board VALUES (?,?,?,?,?,?,?,?,?,?,?,now())";
+			pstmt2 = con.prepareStatement(sql);
+			pstmt2.setInt(1, num); // 글번호(board_num)
+			pstmt2.setString(2, board.getBoard_name()); // 작성자(board_name)
+			pstmt2.setString(3, board.getBoard_pass()); // 작성자(board_name)
+			pstmt2.setString(4, board.getBoard_subject()); // 제목(board_subject)
+			pstmt2.setString(5, board.getBoard_content()); // 내용(board_content)
+			pstmt2.setString(6, board.getBoard_file()); // 실제 업로드 파일명(board_file)
+			pstmt2.setString(7, board.getBoard_real_file()); // 원본 파일명(board_real_file)
+			pstmt2.setInt(8, re_ref); // 참조글번호(board_re_ref) = 원본글의 참조글번호
+			pstmt2.setInt(9, re_lev); // 들여쓰기레벨(board_re_lev) = 계산된 레벨
+			pstmt2.setInt(10, re_seq); // 순서번호(board_re_seq) = 계산된 순서번호
+			pstmt2.setInt(11, 0); // 조회수(board_readcount)
+			
+			// INSERT 구문 실행 후 리턴값을 insertCount 변수에 저장
+			insertCount = pstmt2.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("SQL 구문 오류 발생! - insertBoard()");
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(pstmt2);
+		}
+		
+		return insertCount;
+	}
+	
 	
 }
 
