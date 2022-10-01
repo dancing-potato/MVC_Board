@@ -19,6 +19,7 @@ public class BoardListAction implements Action {
 		// => 이 때, request 객체 유지 및 URL 유지를 위해 Dispatcher 방식 포워딩
 //		System.out.println("BoardListAction");
 		
+		
 		ActionForward forward = null;
 		
 		// 페이징 처리를 위한 변수 선언
