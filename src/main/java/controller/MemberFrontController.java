@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
+import action.MemberInfoAction;
 import action.MemberJoinProAction;
+import action.MemberLoginProAction;
+import action.MemberLogoutAction;
 import vo.ActionForward;
 
 @WebServlet("*.me")
@@ -40,14 +43,35 @@ public class MemberFrontController extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if(command.equals("/MemberJoinResult.me")) {
+			forward = new ActionForward();
+			forward.setPath("member/member_join_result.jsp");
+			forward.setRedirect(false);
 		} else if(command.equals("/MemberLoginForm.me")) {
 			forward = new ActionForward();
 			forward.setPath("member/member_login_form.jsp");
 			forward.setRedirect(false);
 		} else if(command.equals("/MemberLoginPro.me")) {
-			
+			action = new MemberLoginProAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if(command.equals("/MemberLogout.me")) {
-			
+			action = new MemberLogoutAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/MemberInfo.me")) {
+			action = new MemberInfoAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		// --------------------------------------------------------------------------------
