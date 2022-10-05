@@ -45,8 +45,10 @@ public class MemberJoinProAction implements Action {
 			out.println("history.back()");
 			out.println("</script>");
 		} else { // 성공 시
+			// 회원 인증 메일 발송을 위한 MemberSendAuthMail.me 페이지 포워딩
+			// => 파라미터로 가입자의 아이디와 이메일주소를 함께 전송
 			forward = new ActionForward();
-			forward.setPath("MemberJoinResult.me");
+			forward.setPath("MemberSendAuthMail.me?id=" + member.getId() + "&email=" + member.getEmail());
 			forward.setRedirect(true);
 		}
 		

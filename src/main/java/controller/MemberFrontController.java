@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
+import action.MemberAuthAction;
 import action.MemberInfoAction;
 import action.MemberJoinProAction;
 import action.MemberLoginProAction;
 import action.MemberLogoutAction;
+import action.MemberSendAuthMailAction;
 import vo.ActionForward;
 
 @WebServlet("*.me")
@@ -67,6 +69,20 @@ public class MemberFrontController extends HttpServlet {
 			}
 		} else if(command.equals("/MemberInfo.me")) {
 			action = new MemberInfoAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/MemberSendAuthMail.me")) {
+			action = new MemberSendAuthMailAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/MemberAuth.me")) {
+			action = new MemberAuthAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
