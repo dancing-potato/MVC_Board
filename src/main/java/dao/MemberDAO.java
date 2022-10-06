@@ -191,6 +191,81 @@ public class MemberDAO {
 		
 		return isAuthenticatedUser;
 	}
+
+	// 인증 정보 확인
+	public boolean selectAuthInfo(AuthInfoBean authInfo) {
+		System.out.println(authInfo.getId() + ", " + authInfo.getAuth_code());
+		boolean isAuthenticationSuccess = false;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			// 전달받은 AuthInfoBean 객체의 인증정보(아이디, 인증코드)가 일치하는
+			// auth_info 테이블의 인증 정보를 조회
+			// => 일치하는 레코드가 존재할 경우 = 인증코드가 일치할 경우
+			//    isAuthenticationSuccess 를 true 로 변경
+			String sql = "SELECT * FROM auth_info WHERE id=? AND auth_code=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, authInfo.getId());
+			pstmt.setString(2, authInfo.getAuth_code());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				isAuthenticationSuccess = true;
+			}
+		} catch (SQLException e) {
+			System.out.println("SQL 구문 오류 발생! - selectAuthInfo()");
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+		
+		return isAuthenticationSuccess;
+	}
+
+	// 인증 상태 변경
+	public int updateAuthStatus(AuthInfoBean authInfo) {
+		int updateCount = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		try {
+			String sql = "UPDATE member SET auth_status='Y' WHERE id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, authInfo.getId());
+			updateCount = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL 구문 오류 발생! - updateAuthStatus()");
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		
+		return updateCount;
+	}
+
+	// 인증 정보 삭제
+	public int deleteAuthInfo(AuthInfoBean authInfo) {
+		int deleteCount = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		try {
+			String sql = "DELETE FROM auth_info WHERE id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, authInfo.getId());
+			deleteCount = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL 구문 오류 발생! - deleteAuthInfo()");
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		
+		return deleteCount;
+	}
 	
 	
 	

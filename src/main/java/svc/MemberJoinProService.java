@@ -9,6 +9,8 @@ import vo.MemberBean;
 public class MemberJoinProService {
 	
 	public boolean registMember(MemberBean member) {
+		
+		System.out.println("MemberJoinProService");
 		boolean isRegistSuccess = false;
 		
 		// 공통작업-1. Connection 객체 가져오기

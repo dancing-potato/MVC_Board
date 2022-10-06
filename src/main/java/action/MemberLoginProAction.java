@@ -68,7 +68,6 @@ public class MemberLoginProAction implements Action {
 			}
 		}
 		
-		
 		return forward;
 	}
 
