@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import cipher.MyMessageDigest;
 import svc.BoardDeleteProService;
 import svc.BoardModifyProService;
 import vo.ActionForward;
@@ -42,7 +43,13 @@ public class BoardModifyProAction implements Action {
 		// => multipart/form-data 타입으로 전달되므로 MultipartRequest 객체로부터 가져오기
 		int board_num = Integer.parseInt(multi.getParameter("board_num"));
 		String pageNum = multi.getParameter("pageNum");
-		String board_pass = multi.getParameter("board_pass");
+//		String board_pass = multi.getParameter("board_pass");
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		String board_pass = md.hashing(multi.getParameter("board_pass"));
+		// ---------------------------------------------------------------------------------------
+		
 //		System.out.println(board_num + ", " + pageNum + ", " + board_pass);
 		
 		// BoardModifyProService 클래스의 isBoardWriter() 메서드 호출하여 패스워드 일치 여부 확인

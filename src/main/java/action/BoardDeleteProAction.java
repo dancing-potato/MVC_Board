@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cipher.MyMessageDigest;
 import svc.BoardDeleteProService;
 import vo.ActionForward;
 
@@ -19,7 +20,13 @@ public class BoardDeleteProAction implements Action {
 		// 글번호, 페이지번호, 패스워드 파라미터 가져오기
 		int board_num = Integer.parseInt(request.getParameter("board_num"));
 		String pageNum = request.getParameter("pageNum");
-		String board_pass = request.getParameter("board_pass");
+//		String board_pass = request.getParameter("board_pass");
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		String board_pass =  md.hashing(request.getParameter("board_pass"));
+		// ---------------------------------------------------------------------------------------
+		
 //		System.out.println(board_num + ", " + pageNum + ", " + board_pass);
 		
 		// BoardDeleteProService 클래스의 isBoardWriter() 메서드 호출하여 패스워드 일치 여부 확인

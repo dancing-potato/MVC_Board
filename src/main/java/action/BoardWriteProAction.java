@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import cipher.MyMessageDigest;
 import svc.BoardWriteProService;
 import vo.ActionForward;
 import vo.BoardBean;
@@ -53,7 +54,12 @@ public class BoardWriteProAction implements Action {
 		// 전달받은 파라미터 데이터를 BoardBean 객체 생성 후 저장
 		BoardBean board = new BoardBean();
 		board.setBoard_name(multi.getParameter("board_name"));
-		board.setBoard_pass(multi.getParameter("board_pass"));
+//		board.setBoard_pass(multi.getParameter("board_pass"));
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		board.setBoard_pass(md.hashing(multi.getParameter("board_pass")));
+		// ---------------------------------------------------------------------------------------
 		board.setBoard_subject(multi.getParameter("board_subject"));
 		board.setBoard_content(multi.getParameter("board_content"));
 		// 단, 파일명을 가져올 때는 단순히 getParameter() 메서드로 처리 불가

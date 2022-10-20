@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import cipher.MyMessageDigest;
 import svc.MemberLoginProService;
 import vo.ActionForward;
 import vo.MemberBean;
@@ -21,7 +22,12 @@ public class MemberLoginProAction implements Action {
 		// 전달받은 파라미터 가져와서 MemberBean 객체에 저장
 		MemberBean member = new MemberBean();
 		member.setId(request.getParameter("id"));
-		member.setPasswd(request.getParameter("passwd"));
+//		member.setPasswd(request.getParameter("passwd"));
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		member.setPasswd(md.hashing(request.getParameter("passwd")));
+		// ---------------------------------------------------------------------------------------
 //		System.out.println(member);
 		
 		MemberLoginProService service = new MemberLoginProService();

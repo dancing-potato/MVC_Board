@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import cipher.MyMessageDigest;
 import svc.BoardReplyProService;
 import vo.ActionForward;
 import vo.BoardBean;
@@ -42,7 +43,12 @@ public class BoardReplyProAction implements Action {
 		BoardBean board = new BoardBean();
 		board.setBoard_num(Integer.parseInt(multi.getParameter("board_num")));
 		board.setBoard_name(multi.getParameter("board_name"));
-		board.setBoard_pass(multi.getParameter("board_pass"));
+//		board.setBoard_pass(multi.getParameter("board_pass"));
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		board.setBoard_pass(md.hashing(multi.getParameter("board_pass")));
+		// ---------------------------------------------------------------------------------------
 		board.setBoard_subject(multi.getParameter("board_subject"));
 		board.setBoard_content(multi.getParameter("board_content"));
 		String fileElement = multi.getFileNames().nextElement().toString();

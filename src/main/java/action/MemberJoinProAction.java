@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cipher.MyMessageDigest;
 import svc.MemberJoinProService;
 import vo.ActionForward;
 import vo.MemberBean;
@@ -23,7 +24,12 @@ public class MemberJoinProAction implements Action {
 		member.setGender(request.getParameter("gender"));
 		member.setEmail(request.getParameter("email1") + "@" + request.getParameter("email2"));
 		member.setId(request.getParameter("id"));
-		member.setPasswd(request.getParameter("passwd"));
+//		member.setPasswd(request.getParameter("passwd"));
+		// ------------------------- 패스워드 단방향 암호화 기능 추가 ----------------------------
+		// MyMessageDigest 객체의 hashing() 메서드를 호출하여 "SHA-256" 알고리즘으로 패스워드 해싱
+		MyMessageDigest md = new MyMessageDigest("SHA-256");
+		member.setPasswd(md.hashing(request.getParameter("passwd")));
+		// ---------------------------------------------------------------------------------------
 //		System.out.println(member);
 		
 		// MemberJoinProService - registMember() 메서드 호출하여 회원 등록 작업 요청
