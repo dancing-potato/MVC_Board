@@ -1,5 +1,6 @@
 package auth;
 
+import java.util.Arrays;
 import java.util.Random;
 
 // 인증 메일을 통해 발송할 인증 코드 생성을 위한 클래스 정의

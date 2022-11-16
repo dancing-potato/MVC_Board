@@ -14,6 +14,7 @@ import action.BoardDeleteProAction;
 import action.BoardDetailAction;
 import action.BoardListAction;
 import action.BoardListAction_Backup;
+import action.BoardListJsonAction;
 import action.BoardModifyFormAction;
 import action.BoardModifyProAction;
 import action.BoardReplyFormAction;
@@ -133,6 +134,14 @@ public class BoardFrontController extends HttpServlet {
 		} else if(command.equals("/BoardReplyPro.bo")) {
 			// 답글 작성 비즈니스 작업 요청 => BoardReplyProAction 클래스
 			action = new BoardReplyProAction();
+			
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if(command.equals("/BoardListJson.bo")) {
+			action = new BoardListJsonAction();
 			
 			try {
 				forward = action.execute(request, response);

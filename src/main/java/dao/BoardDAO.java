@@ -349,6 +349,7 @@ public class BoardDAO {
 		return updateCount;
 	}
 	
+	
 	// 답글 등록
 	public int insertReplyBoard(BoardBean board) {
 		int insertCount = 0;
@@ -409,7 +410,7 @@ public class BoardDAO {
 			insertCount = pstmt2.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("SQL 구문 오류 발생! - insertReplyBoard()");
+			System.out.println("SQL 구문 오류 발생! - insertBoard()");
 		} finally {
 			JdbcUtil.close(rs);
 			JdbcUtil.close(pstmt);

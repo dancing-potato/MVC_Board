@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
 import action.MemberAuthAction;
+import action.MemberIdCheckAction;
 import action.MemberInfoAction;
 import action.MemberJoinProAction;
 import action.MemberLoginProAction;
@@ -83,6 +84,13 @@ public class MemberFrontController extends HttpServlet {
 			}
 		} else if(command.equals("/MemberAuth.me")) {
 			action = new MemberAuthAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else if(command.equals("/MemberIdCheck.me")) {
+			action = new MemberIdCheckAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {

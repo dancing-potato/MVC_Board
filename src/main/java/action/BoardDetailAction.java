@@ -11,7 +11,7 @@ public class BoardDetailAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("BoardDetailAction - mvc_board");
+		System.out.println("BoardDetailAction");
 		
 		ActionForward forward = null;
 		

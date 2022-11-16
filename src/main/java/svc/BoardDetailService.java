@@ -47,7 +47,7 @@ public class BoardDetailService {
 	
 	// 게시물 조회 요청
 	// => 파라미터 : 글번호(board_num)    리턴타입 : BoardBean(board)
-	// => 추가사항 : 실제 조회와 수정 및 삭제를 위한 조회 구분을 위해 파라미터 String work 추가
+	// => 추가사항 : 실제 조회와 수정 및 삭제를 위한 조회 구분을 위해 파라미터 Strign work 추가
 	public BoardBean getBoard(int board_num, String work) {
 		BoardBean board = null;
 		

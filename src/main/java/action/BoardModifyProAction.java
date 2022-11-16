@@ -10,7 +10,6 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import cipher.MyMessageDigest;
-import svc.BoardDeleteProService;
 import svc.BoardModifyProService;
 import vo.ActionForward;
 import vo.BoardBean;
